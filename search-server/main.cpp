@@ -62,17 +62,15 @@ public:
     }
 
     void AddDocument(int document_id, const string& document) {
-        document_count_++;
-        set<string> words_doc;
+        documents_count_++;
         const vector<string> words = SplitIntoWordsNoStop(document);
-        id_count_word[document_id] = words.size();
+        id_count_words_[document_id] = words.size();
+        double tf = static_cast<double>(1.0 / words.size());
+
         for (const string word : words) {
-            words_doc.insert(word);
-            index_[word][document_id] += double(1.0 / words.size());
+            index_[word][document_id] += tf;
         }
-        for (string word : words_doc) {
-            word_count[word]++;
-        }
+        
 
     }
 
@@ -92,10 +90,9 @@ public:
 
 private:
     map<string, map<int, double>> index_;// name{id,tf}
-    map<string, double>words_count_;// сколько этого слова в тексте
     map<int, int> id_count_words_;//сколько слов в докменте
     set<string> stop_words_;
-    int document_count_ = 0;
+    int documents_count_ = 0;
 
     bool IsStopWord(const string& word) const {
         return stop_words_.count(word) > 0;
@@ -122,11 +119,10 @@ private:
     vector<Document> FindAllDocuments(const set<string>& query_words) const {
         vector<Document> matched_documents;
         map<int, double> id_tf_ide;
-        /*Отменил проверку на минус слова так как в тексте оно не попадется , а также установил проверку наличия поиск-слова
-        в ключах index_  чтобы не вызывать ошибку при отсутствии слова в самом тексте у метода .at()*/
-        for (string word : query_words)if (!stop_words_.count(word) && index_.count(word)) {
+        for (const string word : query_words)if (!stop_words_.count(word) && index_.count(word) && word.at(0) != '-') {
+            double count_word = index_.at(word).size();
             for (auto [id, tf] : index_.at(word)) {
-                id_tf_ide[id] += tf * log(documents_count_ / words_count.at(word));
+                id_tf_ide[id] += Count_IDE(tf, count_word);
             }
         }
 
@@ -136,7 +132,9 @@ private:
 
         return matched_documents;
     }
-
+    double Count_IDE(const double tf, const double count_word) const {
+        return  tf * log(documents_count_ / count_word);
+    }
 
 };
 
