@@ -48,7 +48,6 @@ vector<string> SplitIntoWords(const string& text) {
 }
 
 struct Document {
-
     Document() 
     :id(0), relevance(0.0), rating(0)
      {
@@ -88,20 +87,17 @@ public:
         SetStopWords(set_words);
     }
 
-
 template<typename list>
     void SetStopWords(const list& set_words) {
         for (const string& word : set_words) {
             if(!word.empty()){
                 if(!NotSpecSymbol(word)){
                     throw invalid_argument("Присутствие спец символов недопустимо");
-            }
+                }
                 stop_words_.insert(word);
-        }
+            }
         }
     }
-
-
 
     void AddDocument(int document_id, const string& document, DocumentStatus status,
                      const vector<int>& ratings) {
@@ -123,8 +119,7 @@ template<typename list>
             word_to_document_freqs_[word][document_id] += inv_word_count;
         }
         documents_.emplace(document_id, DocumentData{ComputeAverageRating(ratings), status});
-    }
-    
+    }   
     
     template <typename compor>
     vector<Document> FindTopDocuments(const string& raw_query,
@@ -169,8 +164,7 @@ template<typename list>
         
         const Query query = ParseQuery(raw_query);
         if(!query.mistaks.empty()){    
-            throw invalid_argument(CollectMistack(query.mistaks));   
-        
+            throw invalid_argument(CollectMistack(query.mistaks));           
         }
 
         vector<string> matched_words;
@@ -218,17 +212,13 @@ private:
         return stop_words_.count(word) > 0;
     }
 
-    static bool NotSpecSymbol(const string & word){
-         
+    static bool NotSpecSymbol(const string & word){         
         // A valid word must not contain special characters
         return none_of(word.begin(), word.end(), [](char c) {
             return c >= '\0' && c < ' ';
         });
     }
         
-    
-     
-
     vector<string> SplitIntoWordsNoStop(const string& text) const {
         vector<string> words;
         for (const string& word : SplitIntoWords(text)) {
@@ -264,13 +254,12 @@ private:
         }
         if(text.empty()){
             mistake="минус слово состоит из одного минуса"s;
-        }
-        if(text[0] == '-'){
+        }else if(text[0] == '-'){
             mistake="два минуса у минус слова"s;
-        }if(!NotSpecSymbol(text)){
+        }
+        if(!NotSpecSymbol(text)){
             mistake="минус слово имеет недопустимые символы"s;
         }
-        //cout<<"'"<<text<<"'"<<endl;
         return {text, is_minus, IsStopWord(text),mistake};
     }
 
@@ -334,6 +323,7 @@ private:
         }
         return matched_documents;
     }
+    
     string CollectMistack(const set<string> &mistaks) const{
         string mistak_all="Ошибки : "s;
             bool start= true;
@@ -343,13 +333,9 @@ private:
                 }
                 start= false;
                 mistak_all+=phrase;
-                
-                
-              
             }
         return mistak_all;
-    }
-      
+    }      
 };
 
 // ==================== для примера =========================
@@ -369,8 +355,6 @@ int main() {
         cout << e.what() << endl;
     }
     SearchServer search_server("и в на"s);
-    // Явно игнорируем результат метода AddDocument, чтобы избежать предупреждения
-    // о неиспользуемом результате его вызова
 
     try{
        search_server.AddDocument(1, "пушистый кот пушистый хвост"s, DocumentStatus::ACTUAL, {7, 2, 7});
@@ -396,14 +380,6 @@ int main() {
         cout << e.what() << endl;
     }
 
-    
-
-        
-
-  
-
-
-
     try{
         const auto documents = search_server.FindTopDocuments("пёс --пушистый -"s);
         for (const Document& document : documents) {
@@ -411,10 +387,7 @@ int main() {
         }
     }catch (const invalid_argument& e) {
         cout << e.what() << endl;
-
-    }
-        
-   
+    }      
     return 0;
 } 
 
