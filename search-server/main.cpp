@@ -3,9 +3,8 @@
 
 
 #include "search_server.h"
-#include "read_input_functions.h"
-#include "paginator.h"
 #include "request_queue.h"
+//также при необходимости можно подключить клас пагинатор для разбора резульзатов поиска на страници paginator.h
 
 using namespace std;
 

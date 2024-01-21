@@ -20,7 +20,6 @@ std::ostream& operator<<(std::ostream& out, std::vector<T> vec){
     return out;
 }
 
-
 template<typename T>
 std::vector<std::vector<T>>Paginate(std::vector<T> list, int page_size){
     Paginator exem(list.begin(), list.end(), page_size);

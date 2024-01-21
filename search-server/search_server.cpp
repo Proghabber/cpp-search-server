@@ -73,11 +73,18 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
     }
 
     int SearchServer::GetDocumentId(int index) const {
-        if (index < 0 || index > static_cast<int>(set_id_.size())){
+        /*не знаю насколько данная реализация верна,т.к. мы никогда не использовали эту GetDocumentId()*/
+         try
+        {
+            return set_id_.at(index);
+        }
+        catch (std::out_of_range const& exc)
+        {
             throw std::out_of_range( "index за границами размера списка документов ");
             return INVALID_DOCUMENT_ID;
         }
-        return set_id_[index];
+
+         return 0; 
     }
 
 

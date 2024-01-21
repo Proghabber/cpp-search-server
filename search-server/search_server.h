@@ -37,16 +37,7 @@ public:
 
 
 template<typename list>
-    void SetStopWords(const list& set_words) {
-        for (const std::string& word : set_words) {
-            if (!word.empty()){
-                if (!NotSpecSymbol(word)){
-                    throw std::invalid_argument( "Присутствие спец символов недопустимо");
-                }
-                stop_words_.insert(word);
-            }
-        }
-    }
+    void SetStopWords(const list& set_words);
 
     void AddDocument(int document_id, const std::string& document, DocumentStatus status,
                      const std::vector<int>& ratings);
@@ -54,24 +45,7 @@ template<typename list>
     
     template <typename compor>
     std::vector<Document> FindTopDocuments(const std::string& raw_query,
-                                        compor filter_func) const {
-        std::vector<Document> result;                                                         
-        const Query query = ParseQuery(raw_query); 
-        result = FindAllDocuments(query, filter_func);
-         
-        sort(result.begin(), result.end(),
-             [](const Document& lhs, const Document& rhs){
-                    if (std::abs(lhs.relevance - rhs.relevance) < DEVIATION){
-                        return lhs.rating > rhs.rating;
-                    } else {
-                        return lhs.relevance > rhs.relevance;
-                    }
-                });
-        if (result.size() > MAX_RESULT_DOCUMENT_COUNT){
-            result.resize(MAX_RESULT_DOCUMENT_COUNT);
-        }
-        return result;
-    }
+                                        compor filter_func) const;
  
     std::vector<Document> FindTopDocuments(const std::string& raw_query, DocumentStatus match_status) const;
 
@@ -122,7 +96,46 @@ private:
     double ComputeWordInverseDocumentFreq(const std::string& word) const;
     
     template <typename compor>
-    std::vector<Document> FindAllDocuments(const Query& query, compor func) const {
+    std::vector<Document> FindAllDocuments(const Query& query, compor func) const;
+      
+};
+
+//шаблонные методы
+template<typename list>
+    void SearchServer::SetStopWords(const list& set_words) {
+        for (const std::string& word : set_words) {
+            if (!word.empty()){
+                if (!NotSpecSymbol(word)){
+                    throw std::invalid_argument( "Присутствие спец символов недопустимо");
+                }
+                stop_words_.insert(word);
+            }
+        }
+    }
+  
+template <typename compor>
+    std::vector<Document> SearchServer::FindTopDocuments(const std::string& raw_query,
+                                        compor filter_func) const {
+        std::vector<Document> result;                                                         
+        const Query query = ParseQuery(raw_query); 
+        result = FindAllDocuments(query, filter_func);
+         
+        sort(result.begin(), result.end(),
+             [](const Document& lhs, const Document& rhs){
+                    if (std::abs(lhs.relevance - rhs.relevance) < DEVIATION){
+                        return lhs.rating > rhs.rating;
+                    } else {
+                        return lhs.relevance > rhs.relevance;
+                    }
+                });
+        if (result.size() > MAX_RESULT_DOCUMENT_COUNT){
+            result.resize(MAX_RESULT_DOCUMENT_COUNT);
+        }
+        return result;
+    }
+
+template <typename compor>
+    std::vector<Document> SearchServer::FindAllDocuments(const Query& query, compor func) const {
         std::map<int, double> document_to_relevance;
         for (const std::string& word : query.plus_words){
             if (word_to_document_freqs_.count(word) == 0){
@@ -152,5 +165,3 @@ private:
         }
         return matched_documents;
     }
-      
-};
