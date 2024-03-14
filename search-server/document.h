@@ -18,4 +18,11 @@ struct Document {
     int rating;
 };
 
+enum class DocumentStatus {
+    ACTUAL,
+    IRRELEVANT,
+    BANNED,
+    REMOVED,
+};
+
 std::ostream& operator<<(std::ostream& out, const Document& document);

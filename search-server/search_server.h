@@ -18,12 +18,7 @@
 const int MAX_RESULT_DOCUMENT_COUNT = 5;
 const double  DEVIATION = 1e-6;
 
-enum class DocumentStatus {
-    ACTUAL,
-    IRRELEVANT,
-    BANNED,
-    REMOVED,
-};
+
 
 class SearchServer {
 public:
