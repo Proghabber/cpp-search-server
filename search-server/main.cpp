@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-
 #include "search_server.h"
 #include "request_queue.h"
 //также при необходимости можно подключить клас пагинатор для разбора резульзатов поиска на страници paginator.h

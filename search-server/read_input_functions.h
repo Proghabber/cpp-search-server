@@ -7,7 +7,6 @@
 #include "paginator.h"
 #include "document.h"
 
-
 std::string ReadLine();
 
 int ReadLineWithNumber();

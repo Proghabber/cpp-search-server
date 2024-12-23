@@ -19,7 +19,7 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
         const std::vector<std::string> words = SplitIntoWordsNoStop(document);
         for (const std::string& word : words){
             if (!NotSpecSymbol(word)){
-                 throw std::invalid_argument("Документ меет запрещенные символы");
+                throw std::invalid_argument("Документ имеет запрещенные символы");
             }
         }
 
@@ -32,8 +32,8 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
     }
     
     std::vector<Document> SearchServer::FindTopDocuments(const std::string& raw_query, DocumentStatus match_status) const {
-        auto funk_filter=[match_status](int , DocumentStatus status, int ){return match_status==status;};
-        return  FindTopDocuments(raw_query,funk_filter);
+        auto funk_filter = [match_status](int , DocumentStatus status, int ){return match_status == status;};
+        return  FindTopDocuments(raw_query, funk_filter);
     }
 
     std::vector<Document> SearchServer::FindTopDocuments(const std::string& raw_query) const { 
@@ -68,23 +68,21 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
                 break;
             }
         }
-        std::tuple<std::vector<std::string>, DocumentStatus> result ={matched_words, documents_.at(document_id).status};
+        std::tuple<std::vector<std::string>, DocumentStatus> result = {matched_words, documents_.at(document_id).status};
         return result;
     }
 
     int SearchServer::GetDocumentId(int index) const {
-        /*не знаю насколько данная реализация верна,т.к. мы никогда не использовали эту GetDocumentId()*/
-         try
+        try
         {
             return set_id_.at(index);
         }
         catch (std::out_of_range const& exc)
         {
-            throw std::out_of_range( "index за границами размера списка документов ");
+            throw std::out_of_range("index за границами размера списка документов ");
             return INVALID_DOCUMENT_ID;
         }
-
-         return 0; 
+        return 0; 
     }
 
 
@@ -92,17 +90,13 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
         return stop_words_.count(word) > 0;
     }
 
-    bool SearchServer::NotSpecSymbol(const std::string& word){
-         
+    bool SearchServer::NotSpecSymbol(const std::string& word){  
         // A valid word must not contain special characters
         return none_of(word.begin(), word.end(), [](char c) {
             return c >= '\0' && c < ' ';
         });
     }
         
-    
-     
-
     std::vector<std::string> SearchServer::SplitIntoWordsNoStop(const std::string& text) const {
         std::vector<std::string> words;
         for (const std::string& word : SplitIntoWords(text)){
@@ -121,8 +115,6 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
         return accumulate(begin(ratings), end(ratings), 0, std::plus<int>()) / size;       
     }
 
-  
-
     SearchServer::QueryWord SearchServer::ParseQueryWord(std::string text) const {
         bool is_minus = false;
         std::string mistake;
@@ -139,12 +131,9 @@ void SearchServer::AddDocument(int document_id, const std::string& document, Doc
         } 
         if (!NotSpecSymbol(text)){
             throw std::invalid_argument( "минус слово имеет недопустимые символы");
-        }
-        
+        } 
         return {text, is_minus, IsStopWord(text)};
     }
-
-  
 
     SearchServer::Query SearchServer::ParseQuery(const std::string& text) const {
         Query query;

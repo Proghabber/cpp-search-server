@@ -18,8 +18,6 @@
 const int MAX_RESULT_DOCUMENT_COUNT = 5;
 const double  DEVIATION = 1e-6;
 
-
-
 class SearchServer {
 public:
     inline static constexpr int INVALID_DOCUMENT_ID = -1;
@@ -91,8 +89,7 @@ private:
     double ComputeWordInverseDocumentFreq(const std::string& word) const;
     
     template <typename compor>
-    std::vector<Document> FindAllDocuments(const Query& query, compor func) const;
-      
+    std::vector<Document> FindAllDocuments(const Query& query, compor func) const;     
 };
 
 //шаблонные методы

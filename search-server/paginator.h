@@ -5,7 +5,7 @@
 
 template <typename Iterator>
 class Paginator {
-    public:
+public:
     Paginator(Iterator begin, Iterator end, int page_size)
         :begin_(begin), end_(end), pages(page_size)
     {
@@ -17,9 +17,7 @@ class Paginator {
         return list;
     }
 
-    
-    private:
-
+private:
     void FullList(){
         for(auto iter = begin_; iter != end_; iter += step){
             Iterator start = iter;
@@ -31,15 +29,13 @@ class Paginator {
                 last = end_;
                 list.push_back({start, last});
                 break;
-            }
-
-            
+            } 
         }
     }
 
     void SetStep(){
         if (pages <= 0){
-            throw std::domain_error("вы ввели ноль страниц некуда вывести информацию !");
+            throw std::domain_error("Вы ввели ноль страниц некуда вывести информацию!");
         } else if (pages <= end_ - begin_){
             if ((end_ - begin_) % pages != 0){
                 step = (end_ - begin_) / pages + 1;
@@ -51,12 +47,11 @@ class Paginator {
         } else {
             step = 0;
         }
-
     }
+
     Iterator begin_;
     Iterator end_;
     int pages;
     int step;
-    std::vector<std::vector<typename Iterator::value_type>> list;
-    
+    std::vector<std::vector<typename Iterator::value_type>> list;   
 }; 
